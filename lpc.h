@@ -7,24 +7,28 @@
 
 #include <iostream>
 #include <Eigen/Dense>
+#include <assert.h>
 
 using namespace std;
 using namespace Eigen;
 
 class lpc {
-    MatrixXd m, coefficients, residuals, autocorrelations;
+    MatrixXd *m, *coefficients, *residuals;
+public:
+    const MatrixXd &getCoefficients() const;
+
+    const MatrixXd &getResiduals() const;
+
+private:
     int p;
+    uint32_t rows, cols;
 
 public:
-    lpc(int p);
-
     lpc(const MatrixXd &m, const int &p);
 
     lpc();
     ~lpc();
 
-    void get_coefficient();
-    void get_residual();
 
     void cal_error();
 
@@ -34,10 +38,17 @@ public:
     int getP() const;
     void setP(int p);
 
+    void predict();
 
-private:
+
+public:
     const VectorXd &levinson_durbin(const VectorXd &r, const int &p);
-    const VectorXd &auto_correlation(const VectorXd &r, const int &p);
+    const VectorXd &auto_correlation(const VectorXd &data, const int &p);
+    const VectorXd &cal_residuals(const VectorXd &data, const VectorXd &a, const int &p);
+
+    void matrix_coefficient();
+    void matrix_residual();
+
 
 protected:
 
